@@ -5,7 +5,17 @@ In this module, we define schemas and acsets.
 import json
 from typing import Any, Union
 
-from pydantic import BaseModel, create_model
+from pydantic import BaseModel, Field, create_model
+
+__all__ = [
+    "ACSet",
+    "Attr",
+    "AttrType",
+    "Hom",
+    "Ob",
+    "Schema",
+    "CatlabSchema",
+]
 
 
 class HashableBaseModel(BaseModel):
@@ -52,8 +62,8 @@ class Hom(HashableBaseModel):
     """
 
     name: str
-    dom: Ob
-    codom: Ob
+    dom: Ob = Field(title="domain", description="...")
+    codom: Ob = Field(title="codomain", description="...")
 
     def __init__(self, name: str, dom: Ob, codom: Ob) -> None:
         """Initialize a new morphism for a schema.
@@ -103,6 +113,8 @@ class AttrType(HashableBaseModel):
     """
 
     name: str
+    # FIXME there's an issue with generating a coherent schema when using `type`;
+    #  you might want to consider generics as an alternative for this
     ty: type
 
     def __init__(self, name: str, ty: type) -> None:
@@ -129,9 +141,9 @@ class Attr(HashableBaseModel):
     which is the attribute that stores the name of a species in a Petri net.
     """
 
-    name: str
-    dom: Ob
-    codom: AttrType
+    name: str = Field(title="name")
+    dom: Ob = Field(title="domain")
+    codom: AttrType = Field(title="codomain")
 
     def __init__(self, name: str, dom: Ob, codom: AttrType) -> None:
         """Initialize a new attribute for a schema.
